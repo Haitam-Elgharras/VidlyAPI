@@ -1,0 +1,22 @@
+
+###get
+GET     http://localhost:3000/vidly/movies/genres
+
+###delete
+DELETE  http://localhost:3000/vidly/movies/genres/10
+
+###post
+POST    http://localhost:3000/vidly/movies/genres
+Content-Type: application/json
+
+{
+    "name": "genre10"
+}
+
+###put
+PUT     http://localhost:3000/vidly/movies/genres/10
+Content-Type: application/json
+
+{
+    "name": "genre11"
+}
