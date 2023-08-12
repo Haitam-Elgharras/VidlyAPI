@@ -62,4 +62,4 @@ The API uses a MongoDB database. The connection is established in the `index.js`
 
 ---
 
-Feel free to customize this README to fit your project's specifics. Make sure to update the installation instructions, endpoints, authors, and license information accordingly.
+Feel free to customize this README to fit your project's specifics. Make sure to update the installation instructions, endpoints, authors accordingly.
