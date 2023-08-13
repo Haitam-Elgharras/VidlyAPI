@@ -2,6 +2,11 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 const mongoose = require("mongoose");
+
+// try to learn about transactions in mongodb and other databases
+// const Fawn = require("fawn");
+//Fawn.init(mongoose);
+
 const genres = require("./routes/genres");
 const home = require("./routes/home");
 const customers = require("./routes/customers");
