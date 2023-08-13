@@ -1,4 +1,12 @@
 const Joi = require("joi");
+Joi.objectId = require("joi-objectid")(Joi);
+//to replace
+// if (
+//   !mongoose.Types.ObjectId.isValid(req.body.customerId) ||
+//   !mongoose.Types.ObjectId.isValid(req.body.movieId)
+// )
+//   return res.status(400).send("Invalid objectID.");
+
 const mongoose = require("mongoose");
 
 const Rental = mongoose.model(
@@ -60,8 +68,8 @@ const Rental = mongoose.model(
 
 function validateRental(rental) {
   const schema = Joi.object({
-    customerId: Joi.string().required(),
-    movieId: Joi.string().required(),
+    customerId: Joi.objectId().required(),
+    movieId: Joi.objectId().required(),
   });
 
   return schema.validate(rental);
