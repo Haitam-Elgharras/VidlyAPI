@@ -33,15 +33,13 @@ const Movie = mongoose.model("Movie", movieSchema);
 async function validMovie(data) {
   const schema = Joi.object({
     title: Joi.string().min(4).max(50).required(),
-    genreId: Joi.string().required(),
+    genreId: Joi.objectId().required(),
     numberInStock: Joi.number().min(0).required(),
     dailyRentalRate: Joi.number().min(0).required(),
   });
   return schema.validate(data);
 }
 async function validId(req) {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id)) return;
-
   let movie = await Movie.findOne({ _id: req.params.id });
   return movie;
 }

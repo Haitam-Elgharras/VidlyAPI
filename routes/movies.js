@@ -42,6 +42,8 @@ router.post("/", async (req, res) => {
   });
 
   try {
+    //we don't need to reset the movie to get the _id cause it's already set
+    //when we create the new movie object.
     newMovie = await newMovie.save();
     return res.send(newMovie);
   } catch (err) {

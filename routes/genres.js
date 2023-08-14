@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const { Genre, validGenre, validId } = require("../models/genres");
+const { validate } = require("../models/rental");
 
 router.get("/", async (req, res) => {
   let genres = await Genre.find().sort("name");
@@ -13,7 +14,6 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   const genre = await validId(req);
-
   if (!genre)
     return res.status(404).send("The genre with the given ID was not found.");
 

@@ -1,11 +1,4 @@
 const Joi = require("joi");
-Joi.objectId = require("joi-objectid")(Joi);
-//to replace
-// if (
-//   !mongoose.Types.ObjectId.isValid(req.body.customerId) ||
-//   !mongoose.Types.ObjectId.isValid(req.body.movieId)
-// )
-//   return res.status(400).send("Invalid objectID.");
 
 const mongoose = require("mongoose");
 
