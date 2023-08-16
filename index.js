@@ -1,3 +1,6 @@
+// This is a replacement for asyncMiddleware function
+//that wraps the route handler inside a try catch block
+require("express-async-errors");
 const config = require("config");
 const express = require("express");
 const app = express();

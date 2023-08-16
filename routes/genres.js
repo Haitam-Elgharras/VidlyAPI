@@ -5,15 +5,9 @@ const { Genre, validGenre, validId } = require("../models/genres");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 
-router.get("/", async (req, res, next) => {
-  try {
-    let genres = await Genre.find().sort("name");
-    if (genres) return res.send(genres);
-  } catch (ex) {
-    // passed directly to the last middleware in the pipeline
-    //which is the error middleware
-    next(ex);
-  }
+router.get("/", async (req, res) => {
+  let genres = await Genre.find().sort("name");
+  if (genres) return res.send(genres);
 });
 
 router.get("/:id", async (req, res) => {
