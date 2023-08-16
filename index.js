@@ -16,6 +16,7 @@ const movies = require("./routes/movies");
 const rentals = require("./routes/rentals");
 const users = require("./routes/users");
 const auth = require("./routes/auth");
+const error = require("./middleware/error");
 
 if (!config.get("jwtPrivateKey")) {
   console.error("FATAL ERROR: jwtPrivateKey is not defined.");
@@ -30,6 +31,8 @@ app.use("/vidly/api/movies", movies);
 app.use("/vidly/api/rentals", rentals);
 app.use("/vidly/api/users", users);
 app.use("/vidly/api/auth", auth);
+// centralize error handling
+app.use(error);
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/vidly")

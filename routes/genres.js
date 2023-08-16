@@ -3,20 +3,23 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const { Genre, validGenre, validId } = require("../models/genres");
 const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 
-router.get("/", async (req, res) => {
-  let genres = await Genre.find().sort("name");
-  if (genres) {
-    return res.send(genres);
+router.get("/", async (req, res, next) => {
+  try {
+    let genres = await Genre.find().sort("name");
+    if (genres) return res.send(genres);
+  } catch (ex) {
+    // passed directly to the last middleware in the pipeline
+    //which is the error middleware
+    next(ex);
   }
-  return res.status(404).send("not found");
 });
 
 router.get("/:id", async (req, res) => {
   const genre = await validId(req);
   if (!genre)
     return res.status(404).send("The genre with the given ID was not found.");
-
   res.send(genre);
 });
 
@@ -52,7 +55,7 @@ router.put("/:id", auth, async (req, res) => {
 });
 
 // id must be like 64aad3f55e49eb026f121616
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", [auth, admin], async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id))
     return res.status(400).send("Invalid ID");
 

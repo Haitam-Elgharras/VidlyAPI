@@ -33,11 +33,17 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6,
   },
+  isAdmin: Boolean,
+  // roles : [],
+  // operations : []
 });
 
 // Adding method to the userSchema
 userSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, config.get("jwtPrivateKey"));
+  const token = jwt.sign(
+    { _id: this._id, isAdmin: this.isAdmin },
+    config.get("jwtPrivateKey")
+  );
   return token;
 };
 const User = mongoose.model("User", userSchema);

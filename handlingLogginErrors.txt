@@ -1,0 +1,2 @@
+1- when using async await in our route handlers we must always wrap them in a try catch block.
+2- when we have allready handle the external issues so the rest are internal server errors(500)
