@@ -3,6 +3,8 @@ const _ = require("lodash");
 const bcrypt = require("bcrypt");
 const { validateUser, User } = require("../models/user");
 const router = express.Router();
+const jwt = require("jsonwebtoken");
+const config = require("config");
 
 // Create a user
 router.post("/", async (req, res) => {
@@ -17,10 +19,13 @@ router.post("/", async (req, res) => {
 
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
-
   await user.save();
 
-  res.send(_.pick(user, ["_id", "name", "email"]));
+  // auto login after registration
+  const token = jwt.sign({ _id: user._id }, config.get("jwtPrivateKey"));
+  res
+    .header("x-auth-token", token)
+    .send(_.pick(user, ["_id", "name", "email"]));
 });
 
 module.exports = router;
