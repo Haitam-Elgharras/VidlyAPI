@@ -1,12 +1,9 @@
 const express = require("express");
-const _ = require("lodash");
 const bcrypt = require("bcrypt");
 const { User } = require("../models/user");
 const router = express.Router();
 const Joi = require("joi");
 const passwordComplexity = require("joi-password-complexity");
-const jwt = require("jsonwebtoken");
-const config = require("config");
 
 const passwordComplexityOptions = {
   min: 6,
@@ -31,7 +28,7 @@ router.post("/", async (req, res) => {
   if (!validPassword) return res.status(400).send("Invalid email or password.");
 
   // the key is for the digital signature
-  const token = jwt.sign({ _id: user._id }, config.get("jwtPrivateKey"));
+  const token = user.generateAuthToken();
   res.send(token);
 });
 
