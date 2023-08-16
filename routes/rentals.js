@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const Fawn = require("fawn");
 const express = require("express");
 const router = express.Router();
+const auth = require("../middleware/auth");
 
 // To use fawn
 // change obj.modelScemas to obj.Schema in isMongoose(obj) function.(not recommended)
@@ -15,7 +16,7 @@ router.get("/", async (req, res) => {
   res.send(rentals);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -138,7 +139,7 @@ router.get("/:id", async (req, res) => {
   res.send(rental);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id))
     return res.status(400).send("Invalid ID");
 

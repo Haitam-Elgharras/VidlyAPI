@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const { Customer, validate: validateCustomer } = require("../models/customer");
+const auth = require("../middleware/auth");
 
 router.get("/", async (req, res) => {
   const customers = await Customer.find().sort({ name: 1 });
@@ -18,7 +19,7 @@ router.get("/:id", async (req, res) => {
   res.send(customer);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { error } = validateCustomer(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -31,7 +32,7 @@ router.post("/", async (req, res) => {
   return res.send(customer);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id))
     return res.status(400).send("Invalid ID");
 
@@ -44,7 +45,7 @@ router.delete("/:id", async (req, res) => {
   res.send(customer);
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id))
     return res.status(400).send("Invalid ID");
 

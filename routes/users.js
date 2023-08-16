@@ -3,6 +3,14 @@ const _ = require("lodash");
 const bcrypt = require("bcrypt");
 const { validateUser, User } = require("../models/user");
 const router = express.Router();
+const auth = require("../middleware/auth");
+
+// Get the current user
+router.get("/me", auth, async (req, res) => {
+  // req.user is set in the auth middleware
+  const user = await User.findById(req.user._id).select("-password");
+  res.send(user);
+});
 
 // Create a user
 router.post("/", async (req, res) => {

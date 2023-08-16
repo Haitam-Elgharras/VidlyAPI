@@ -32,7 +32,7 @@ router.post("/", auth, async (req, res) => {
   return res.send(newGenre);
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   const result = validGenre(req.body);
   if (result.error) {
     return res.status(400).send(result.error.details[0].message);
@@ -52,7 +52,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // id must be like 64aad3f55e49eb026f121616
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id))
     return res.status(400).send("Invalid ID");
 
