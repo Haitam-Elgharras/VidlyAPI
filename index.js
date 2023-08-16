@@ -1,7 +1,6 @@
 const config = require("config");
 const express = require("express");
 const app = express();
-app.use(express.json());
 const mongoose = require("mongoose");
 
 const Joi = require("joi");
@@ -23,6 +22,7 @@ if (!config.get("jwtPrivateKey")) {
   process.exit(1);
 }
 
+app.use(express.json());
 app.use("/", home);
 app.use("/vidly/api/genres", genres);
 app.use("/vidly/api/customers", customers);

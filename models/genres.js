@@ -17,13 +17,14 @@ const genreSchema = new mongoose.Schema({
    */
 const Genre = mongoose.model("Genre", genreSchema);
 
-async function validGenre(data) {
+function validGenre(genre) {
   const schema = Joi.object({
     name: Joi.string().min(4).required(),
     _id: Joi.objectId(),
   });
-  return schema.validate(data);
+  return schema.validate(genre);
 }
+
 async function validId(req) {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) return;
   let genre = await Genre.findOne({ _id: req.params.id });
