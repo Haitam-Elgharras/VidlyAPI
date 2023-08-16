@@ -3,7 +3,6 @@
 require("express-async-errors");
 const config = require("config");
 const express = require("express");
-const app = express();
 const mongoose = require("mongoose");
 
 const Joi = require("joi");
@@ -20,12 +19,14 @@ const rentals = require("./routes/rentals");
 const users = require("./routes/users");
 const auth = require("./routes/auth");
 const error = require("./middleware/error");
+const logger = require("./utils/logger");
 
 if (!config.get("jwtPrivateKey")) {
   console.error("FATAL ERROR: jwtPrivateKey is not defined.");
   process.exit(1);
 }
 
+const app = express();
 app.use(express.json());
 app.use("/", home);
 app.use("/vidly/api/genres", genres);
@@ -36,6 +37,12 @@ app.use("/vidly/api/users", users);
 app.use("/vidly/api/auth", auth);
 // centralize error handling
 app.use(error);
+
+// this handler is for all exceptions that are not handled in node process pipeline.
+process.on("uncaughtException", (ex) => {
+  logger.error(ex.message, ex);
+  console.log("WE GOT AN UNCAUGHT EXCEPTION");
+});
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/vidly")
