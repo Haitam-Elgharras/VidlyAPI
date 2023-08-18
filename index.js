@@ -38,10 +38,16 @@ app.use("/vidly/api/auth", auth);
 // centralize error handling
 app.use(error);
 
-// this handler is for all exceptions that are not handled in node process pipeline.
+// this handler is for all sync exceptions in node process pipeline that are not handled.
 process.on("uncaughtException", (ex) => {
   logger.error(ex.message, ex);
-  console.log("WE GOT AN UNCAUGHT EXCEPTION");
+  process.exit(1);
+});
+
+// this handler is for all async exceptions(unhandled promise rejections).
+process.on("unhandledRejection", (ex) => {
+  logger.error(ex.message, ex);
+  process.exit(1);
 });
 
 mongoose

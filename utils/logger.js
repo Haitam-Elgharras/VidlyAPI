@@ -1,6 +1,5 @@
 //this logger is work only for errors in express process pipeline
 const { createLogger, format, transports } = require("winston");
-
 require("winston-mongodb");
 
 const logger = createLogger({
