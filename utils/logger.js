@@ -4,9 +4,13 @@ require("winston-mongodb");
 
 const logger = createLogger({
   transports: [
+    new transports.File({
+      filename: "logfile.log", // specify the path to your log file here
+      format: format.combine(format.timestamp(), format.json()),
+    }),
     new transports.MongoDB({
       db: "mongodb://127.0.0.1:27017/vidly",
-      level: "error",
+      level: "info",
       options: { useUnifiedTopology: true },
       collection: "log",
       format: format.combine(format.timestamp(), format.json()),
