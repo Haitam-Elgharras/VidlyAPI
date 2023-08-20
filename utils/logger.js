@@ -4,6 +4,7 @@ require("winston-mongodb");
 
 const logger = createLogger({
   transports: [
+    new transports.Console(),
     new transports.File({
       filename: "logfile.log", // specify the path to your log file here
       format: format.combine(format.timestamp(), format.json()),
