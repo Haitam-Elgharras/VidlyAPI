@@ -14,7 +14,8 @@ router.get("/me", auth, async (req, res) => {
 
 // Create a user
 router.post("/", async (req, res) => {
-  const { error } = validateUser(req.body);
+  //the value is an object containing the validated data
+  const { error, value } = validateUser(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   // Check if user already exists
