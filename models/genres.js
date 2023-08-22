@@ -19,19 +19,12 @@ const Genre = mongoose.model("Genre", genreSchema);
 
 function validGenre(genre) {
   const schema = Joi.object({
-    name: Joi.string().min(4).required(),
+    name: Joi.string().min(4).max(50).required(),
     _id: Joi.objectId(),
   });
   return schema.validate(genre);
 }
 
-async function validId(req) {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id)) return;
-  let genre = await Genre.findOne({ _id: req.params.id });
-  return genre;
-}
-
 exports.validGenre = validGenre;
-exports.validId = validId;
 exports.Genre = Genre;
 exports.genreSchema = genreSchema;
