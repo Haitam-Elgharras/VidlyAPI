@@ -1,6 +1,7 @@
 const request = require("supertest");
 const { Rental } = require("../../models/rental");
 const mongoose = require("mongoose");
+
 describe("/vidly/api/returns", () => {
   let server;
   let customerId;
@@ -34,8 +35,11 @@ describe("/vidly/api/returns", () => {
     await Rental.deleteOne({});
   });
 
-  it("should work ", async () => {
-    const res = await Rental.findById(rental._id);
-    expect(res).not.toBeNull();
+  it("should return 401 if client is not logged in", async () => {
+    const res = await request(server)
+      .post("/vidly/api/returns")
+      .send({ customerId, movieId });
+
+    expect(res.status).toBe(401);
   });
 });
