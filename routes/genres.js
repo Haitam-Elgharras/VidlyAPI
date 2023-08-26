@@ -5,6 +5,7 @@ const { Genre, validGenre, validId } = require("../models/genres");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const validateObjectId = require("../middleware/validateObjectId");
+const validate = require("../middleware/validate");
 
 router.get("/", async (req, res) => {
   let genres = await Genre.find().sort("name");
@@ -32,12 +33,7 @@ router.post("/", auth, async (req, res) => {
   return res.status(201).send(newGenre);
 });
 
-router.put("/:id", auth, async (req, res) => {
-  const result = validGenre(req.body);
-  if (result.error) {
-    return res.status(400).send(result.error.details[0].message);
-  }
-
+router.put("/:id", [auth, validate(validGenre)], async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id))
     return res.status(400).send("Invalid ID");
 

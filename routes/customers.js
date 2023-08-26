@@ -3,11 +3,13 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const { Customer, validate: validateCustomer } = require("../models/customer");
 const auth = require("../middleware/auth");
+const validate = require("../middleware/validate");
 
 router.get("/", async (req, res) => {
   const customers = await Customer.find().sort({ name: 1 });
   res.send(customers);
 });
+
 router.get("/:id", async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id))
     return res.status(400).send("Invalid ID");
@@ -19,10 +21,7 @@ router.get("/:id", async (req, res) => {
   res.send(customer);
 });
 
-router.post("/", auth, async (req, res) => {
-  const { error } = validateCustomer(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-
+router.post("/", [auth, validate(validateCustomer)], async (req, res) => {
   let customer = new Customer({
     name: req.body.name,
     isGold: req.body.isGold,

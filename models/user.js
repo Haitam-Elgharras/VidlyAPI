@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
   // operations : []
 });
 
-// Adding method to the userSchema
+// Adding method to the userSchema (instance method)
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
     { _id: this._id, isAdmin: this.isAdmin },

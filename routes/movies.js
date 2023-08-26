@@ -3,6 +3,19 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const { Movie, validMovie, validId } = require("../models/movie");
 const { Genre } = require("../models/genres");
+const validate = require("../middleware/validate");
+const auth = require("../middleware/auth");
+const Joi = require("joi");
+
+async function validUpdatedMovie(data) {
+  const schema = Joi.object({
+    title: Joi.string().min(4).max(50),
+    genreId: Joi.objectId(),
+    numberInStock: Joi.number().min(0),
+    dailyRentalRate: Joi.number().min(0),
+  });
+  return schema.validate(data);
+}
 
 router.get("/", async (req, res) => {
   let movies = await Movie.find().sort("name");
@@ -21,13 +34,7 @@ router.get("/:id", async (req, res) => {
   res.send(movie);
 });
 
-router.post("/", async (req, res) => {
-  const { error } = validMovie(req.body);
-  if (error) return res.status(400).send(result.error.details[0].message);
-
-  if (!mongoose.Types.ObjectId.isValid(req.body.genreId))
-    return res.status(400).send("Invalid objectId for genre");
-
+router.post("/", [auth, validate(validMovie)], async (req, res) => {
   const genre = await Genre.findById(req.body.genreId);
   if (!genre) return res.status(400).send("Invalid genre.");
 
@@ -51,11 +58,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
-  const result = validMovie(req.body);
-  if (result.error) {
-    return res.status(400).send(result.error.details[0].message);
-  }
+router.put("/:id", [auth, validate(validUpdatedMovie)], async (req, res) => {
   let movie = await validId(req);
   if (!movie)
     return res.status(404).send("The movie with the given ID was not found.");
