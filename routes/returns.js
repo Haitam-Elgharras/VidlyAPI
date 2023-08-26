@@ -2,13 +2,21 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const { Rental } = require("../models/rental");
-const moment = require("moment");
 const { Movie } = require("../models/movie");
+const moment = require("moment");
+const Joi = require("joi");
+const validate = require("../middleware/validate");
 
-router.post("/", auth, async (req, res) => {
-  if (!req.body.customerId || !req.body.movieId)
-    return res.status(400).send("Bad request");
+const validateReturn = (req) => {
+  const schema = Joi.object({
+    customerId: Joi.objectId().required(),
+    movieId: Joi.objectId().required(),
+  });
 
+  return schema.validate(req);
+};
+
+router.post("/", [auth, validate(validateReturn)], async (req, res) => {
   const rental = await Rental.findOne({
     "customer._id": req.body.customerId,
     "movie._id": req.body.movieId,
@@ -21,7 +29,7 @@ router.post("/", auth, async (req, res) => {
 
   rental.dateReturned = new Date();
 
-  const rentalDays = moment().diff(rental.dateOut, "days");
+  const rentalDays = moment(rental.dateReturned).diff(rental.dateOut, "days");
   rental.rentalFee = rentalDays * rental.movie.dailyRentalRate;
 
   await rental.save();
@@ -37,3 +45,17 @@ router.post("/", auth, async (req, res) => {
 });
 
 module.exports = router;
+
+// Post /vidly/api/returns {customerId,movieId}
+
+//return 401 if client is not logged in
+//return 400 if customerId is not provided
+//return 400 if movieId is not provided
+// return 400 if the id is not a valid object id
+// return 404 if no rental found for this customer/movie
+// return 400 if rental already processed
+// return 200 if valid request
+// set the return date
+// calculate the rental fee
+// increase the stock
+// return the rental
